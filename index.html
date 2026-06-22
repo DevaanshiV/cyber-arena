@@ -1605,40 +1605,39 @@
         </main>
     </div>
 
-    <script>
-        // ================================================================
-        // NAVIGATION
-        // ================================================================
+   <script>
         // ==========================================
         // 1. NAVIGATION MECHANISM (TAB CHANGER)
         // ==========================================
         const pages = ['landing', 'dashboard', 'soc', 'crypto', 'challenges', 'leaderboard', 'about'];
 
         function navigateTo(page) {
-    if (window.event) window.event.preventDefault();
+            if (window.event) window.event.preventDefault();
 
-    pages.forEach(p => {
-        const el = document.getElementById('page-' + p) || document.getElementById(p);
-        if (el) el.classList.add('hidden');
-    });
+            pages.forEach(p => {
+                const el = document.getElementById('page-' + p) || document.getElementById(p);
+                if (el) el.classList.add('hidden');
+            });
 
-    const target = document.getElementById('page-' + page) || document.getElementById(page);
-    if (target) {
-        target.classList.remove('hidden');
-        target.classList.add('page-enter');
-        void target.offsetWidth;
-        target.classList.add('page-enter-active');
-    }
+            const target = document.getElementById('page-' + page) || document.getElementById(page);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('page-enter');
+                void target.offsetWidth;
+                target.classList.add('page-enter-active');
+            }
 
-    document.querySelectorAll('.sidebar-item, [onclick^="navigateTo"]').forEach(item => {
-        item.classList.remove('active', 'bg-blue-600');
-    });
-    
-    const activeLink = Array.from(document.querySelectorAll('a')).find(link => 
-        link.getAttribute('onclick') && link.getAttribute('onclick').includes(page)
-    );
-    if (activeLink) activeLink.classList.add('active', 'bg-blue-600');
-}
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active', 'bg-blue-600');
+            });
+            
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(page)) {
+                    link.classList.add('active', 'bg-blue-600');
+                }
+            });
+        }
 
         // ==========================================
         // 2. FULL-STACK BACKEND SYSTEM CONNECTIONS
