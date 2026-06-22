@@ -4,14 +4,14 @@
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
-
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // Parse JSON request bodies
-
+app.use(express.static(__dirname));
 // ================================================================
 // MOCK DATA
 // ================================================================
@@ -173,7 +173,7 @@ app.get('/api/soc/incidents', (req, res) => {
  * Root endpoint – health check
  */
 app.get('/', (req, res) => {
-  res.send('CyberArena API is running.');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ================================================================
