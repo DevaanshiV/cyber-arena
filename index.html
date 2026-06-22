@@ -1670,9 +1670,49 @@
             if (e.key === 'Escape') closeSidebar();
         });
 
-        // ================================================================
-        // CRYPTO LAB FUNCTIONS (simulated)
-        // ================================================================
+       // ==========================================
+// FULL-STACK BACKEND SYSTEM CONNECTIONS
+// ==========================================
+const BACKEND_URL = "https://onrender.com";
+
+// 1. Fetch Live User Profile
+async function fetchUserProfile() {
+    try {
+        const response = await fetch(${BACKEND_URL}/api/user/profile);
+        const data = await response.json();
+        if(document.getElementById('user-name')) document.getElementById('user-name').innerText = data.username;
+        if(document.getElementById('user-xp')) document.getElementById('user-xp').innerText = ${data.current_xp.toLocaleString()} XP;
+    } catch (error) {
+        console.error("Profile connection error:", error);
+    }
+}
+
+// 2. Compute Encryption Over Network Endpoint
+async function encryptText() {
+    const plainTextInput = document.getElementById('plain-text-input') || document.getElementById('plainText');
+    const cipherOutputContainer = document.getElementById('cipherOutput');
+
+    if (!plainTextInput || !plainTextInput.value || !cipherOutputContainer) return;
+
+    const outputSpan = cipherOutputContainer.querySelector('span') || cipherOutputContainer;
+    outputSpan.innerText = "Computing secure cipher stream...";
+
+    try {
+        const response = await fetch(${BACKEND_URL}/api/crypto/encrypt, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: plainTextInput.value })
+        });
+        const data = await response.json();
+        outputSpan.innerText = data.ciphertext;
+    } catch (error) {
+        console.error("Encryption error:", error);
+        outputSpan.innerText = "Error computing cryptographic stream.";
+    }
+}
+
+// Run setup pipelines on page startup
+fetchUserProfile();
         function encryptText() {
             const plain = document.getElementById('plainText').value || 'Hello, CyberArena!';
             const algo = document.getElementById('encryptAlgo').value;
