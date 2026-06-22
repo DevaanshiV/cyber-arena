@@ -1609,6 +1609,9 @@
         // ================================================================
         // NAVIGATION
         // ================================================================
+        // ==========================================
+        // 1. NAVIGATION MECHANISM (TAB CHANGER)
+        // ==========================================
         const pages = ['landing', 'dashboard', 'soc', 'crypto', 'challenges', 'leaderboard', 'about'];
 
         function navigateTo(page) {
@@ -1620,293 +1623,71 @@
             const target = document.getElementById('page-' + page);
             if (target) {
                 target.classList.remove('hidden');
-                target.classList.remove('page-enter');
-                void target.offsetWidth;
                 target.classList.add('page-enter');
+                void target.offsetWidth;
+                target.classList.add('page-enter-active');
             }
 
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 item.classList.remove('active');
-                if (item.dataset.page === page) {
-                    item.classList.add('active');
-                }
             });
-
-            closeSidebar();
-            window.location.hash = page;
+            const activeNav = document.querySelector([data-page="${page}"]);
+            if (activeNav) activeNav.classList.add('active');
         }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('open');
-        }
+        // ==========================================
+        // 2. FULL-STACK BACKEND SYSTEM CONNECTIONS
+        // ==========================================
+        const BACKEND_URL = "https://onrender.com";
 
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-        }
-
-        window.addEventListener('hashchange', () => {
-            const hash = window.location.hash.replace('#', '');
-            if (pages.includes(hash)) {
-                navigateTo(hash);
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.replace('#', '');
-            if (pages.includes(hash)) {
-                navigateTo(hash);
-            } else {
-                navigateTo('dashboard'); // default to dashboard per user request
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeSidebar();
-        });
-
-       // ==========================================
-// FULL-STACK BACKEND SYSTEM CONNECTIONS
-// ==========================================
-const BACKEND_URL = "https://onrender.com";
-
-// 1. Fetch Live User Profile
-async function fetchUserProfile() {
-    try {
-        const response = await fetch(${BACKEND_URL}/api/user/profile);
-        const data = await response.json();
-        if(document.getElementById('user-name')) document.getElementById('user-name').innerText = data.username;
-        if(document.getElementById('user-xp')) document.getElementById('user-xp').innerText = ${data.current_xp.toLocaleString()} XP;
-    } catch (error) {
-        console.error("Profile connection error:", error);
-    }
-}
-
-// 2. Compute Encryption Over Network Endpoint
-async function encryptText() {
-    const plainTextInput = document.getElementById('plain-text-input') || document.getElementById('plainText');
-    const cipherOutputContainer = document.getElementById('cipherOutput');
-
-    if (!plainTextInput || !plainTextInput.value || !cipherOutputContainer) return;
-
-    const outputSpan = cipherOutputContainer.querySelector('span') || cipherOutputContainer;
-    outputSpan.innerText = "Computing secure cipher stream...";
-
-    try {
-        const response = await fetch(${BACKEND_URL}/api/crypto/encrypt, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: plainTextInput.value })
-        });
-        const data = await response.json();
-        outputSpan.innerText = data.ciphertext;
-    } catch (error) {
-        console.error("Encryption error:", error);
-        outputSpan.innerText = "Error computing cryptographic stream.";
-    }
-}
-
-// Run setup pipelines on page startup
-fetchUserProfile();
-        function encryptText() {
-            const plain = document.getElementById('plainText').value || 'Hello, CyberArena!';
-            const algo = document.getElementById('encryptAlgo').value;
-            const output = document.getElementById('cipherOutput');
-
-            const encoded = btoa(plain);
-            const simulated = `[${algo.toUpperCase()}] ${encoded.slice(0, 20)}...${encoded.slice(-8)}`;
-            output.innerHTML = `
-                <span class="text-[#E2E8F0] text-sm font-mono break-all">${simulated}</span>
-                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('cipherOutput')">Copy</button>
-            `;
-        }
-
-        function decryptText() {
-            const cipher = document.getElementById('cipherText').value;
-            const output = document.getElementById('decryptOutput');
-
-            if (!cipher.trim()) {
-                output.innerHTML = `
-                    <span class="text-[#EF4444] text-sm">Please paste cipher text to decrypt.</span>
-                    <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('decryptOutput')">Copy</button>
-                `;
-                return;
-            }
-
-            const match = cipher.match(/\[([^\]]+)\]\s*(.+)/);
-            let decrypted = 'Decrypted: ';
-            if (match && match[2]) {
-                try {
-                    const clean = match[2].replace(/\.\.\..*$/, '');
-                    const decoded = atob(clean + '===');
-                    decrypted += decoded;
-                } catch {
-                    decrypted += 'Unable to decrypt (invalid format)';
-                }
-            } else {
-                decrypted += 'Invalid cipher text format';
-            }
-
-            output.innerHTML = `
-                <span class="text-[#E2E8F0] text-sm font-mono break-all">${decrypted}</span>
-                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('decryptOutput')">Copy</button>
-            `;
-        }
-
-        function generateHash() {
-            const input = document.getElementById('hashInput').value || 'CyberArena';
-            const algo = document.getElementById('hashAlgo').value;
-            const output = document.getElementById('hashOutput');
-
-            let hash = '';
-            const str = input + algo;
-            for (let i = 0; i < (algo === 'md5' ? 32 : 64); i++) {
-                const char = str.charCodeAt(i % str.length) + i * 3;
-                hash += ((char % 16).toString(16));
-            }
-            const label = algo.toUpperCase();
-            const result = `${label}: ${hash}`;
-
-            output.innerHTML = `
-                <span class="text-[#E2E8F0] text-sm font-mono break-all">${result}</span>
-                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('hashOutput')">Copy</button>
-            `;
-        }
-
-        function copyOutput(elementId) {
-            const el = document.getElementById(elementId);
-            const text = el.textContent.replace('Copy', '').trim();
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    const btn = el.querySelector('button');
-                    const orig = btn.textContent;
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => btn.textContent = orig, 1500);
-                }).catch(() => fallbackCopy(text));
-            } else {
-                fallbackCopy(text);
-            }
-        }
-
-        function fallbackCopy(text) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-        }
-
-        // ================================================================
-        // LAUNCH FUNCTIONS for integrations
-        // ================================================================
-        function launchSOC() {
-          window.open('https://devaanshiv-forensic-soc.onrender.com/', '_blank');
-            }
-
-        function launchCyberVault() {
-          window.open('https://devaanshiv-cyber-vault.onrender.com/', '_blank');
-            
-        }
-
-        // ================================================================
-        // TABS (Challenges)
-        // ================================================================
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const parent = this.closest('.flex-wrap');
-                if (parent) {
-                    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                }
-                this.classList.add('active');
-            });
-        });
-
-        // ================================================================
-        // Auto-crypto on load
-        // ================================================================
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const plain = document.getElementById('plainText');
-                if (plain) {
-                    const cryptoPage = document.getElementById('page-crypto');
-                    if (cryptoPage && !cryptoPage.classList.contains('hidden')) {
-                        encryptText();
-                    }
-                }
-            }, 300);
-        });
-
-        const cryptoObserver = new MutationObserver(() => {
-            const cryptoPage = document.getElementById('page-crypto');
-            if (cryptoPage && !cryptoPage.classList.contains('hidden')) {
-                const output = document.getElementById('cipherOutput');
-                if (output && output.querySelector('.text-\\[\\#94A3B8\\]')) {
-                    encryptText();
-                }
-                const hashOut = document.getElementById('hashOutput');
-                if (hashOut && hashOut.querySelector('.text-\\[\\#94A3B8\\]')) {
-                    generateHash();
-                }
-            }
-        });
-        document.querySelectorAll('#page-crypto').forEach(el => {
-            cryptoObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
-        });
-    </script>
-<!-- Connect Frontend to Render Backend -->
-    <script>
-        // REPLACE THIS URL WITH YOUR LIVE RENDER WEB LINK
-        const BACKEND_URL = "https://cyber-arena-29zr.onrender.com";
-
-        // 1. Fetch User Profile Metrics
         async function fetchUserProfile() {
             try {
                 const response = await fetch(${BACKEND_URL}/api/user/profile);
                 const data = await response.json();
-                
-                // Update elements if they have matching IDs
                 if(document.getElementById('user-name')) document.getElementById('user-name').innerText = data.username;
                 if(document.getElementById('user-xp')) document.getElementById('user-xp').innerText = ${data.current_xp.toLocaleString()} XP;
             } catch (error) {
-                console.error("Error connecting to backend profile data:", error);
+                console.error("Profile connection error:", error);
             }
         }
 
-        // 2. Interactive Encryption Lab Execution
-        const encryptBtn = document.getElementById('encrypt-btn');
-        if (encryptBtn) {
-            encryptBtn.addEventListener('click', async () => {
-                const plainTextInput = document.getElementById('plain-text-input');
-                const cipherTextOutput = document.getElementById('cipher-text-output');
-                
-                if (!plainTextInput || !plainTextInput.value) return;
-                
-                cipherTextOutput.placeholder = "Processing secure encryption protocol...";
-                
-                try {
-                    const response = await fetch(${BACKEND_URL}/api/crypto/encrypt, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text: plainTextInput.value })
-                    });
-                    const data = await response.json();
-                    cipherTextOutput.value = data.ciphertext;
-                } catch (error) {
-                    console.error("Encryption service error:", error);
-                    cipherTextOutput.value = "Error computing cryptographic stream.";
-                }
-            });
+        async function encryptText() {
+            const plainTextInput = document.getElementById('plain-text-input') || document.getElementById('plainText');
+            const cipherOutputContainer = document.getElementById('cipherOutput');
+
+            if (!plainTextInput || !plainTextInput.value || !cipherOutputContainer) return;
+
+            const outputSpan = cipherOutputContainer.querySelector('span') || cipherOutputContainer;
+            outputSpan.innerText = "Computing secure cipher stream...";
+
+            try {
+                const response = await fetch(${BACKEND_URL}/api/crypto/encrypt, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: plainTextInput.value })
+                });
+                const data = await response.json();
+                outputSpan.innerText = data.ciphertext;
+            } catch (error) {
+                console.error("Encryption error:", error);
+                outputSpan.innerText = "Error computing cryptographic stream.";
+            }
         }
 
-        // Run baseline setup routines on window load
+        // Initialize default app routines on window startup
         window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (pages.includes(hash)) {
+                navigateTo(hash);
+            } else {
+                navigateTo('dashboard');
+            }
             fetchUserProfile();
+        });
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (pages.includes(hash)) navigateTo(hash);
         });
     </script>
 </body>
