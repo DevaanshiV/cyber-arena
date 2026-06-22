@@ -104,7 +104,7 @@ app.get('/api/user/profile', (req, res) => {
  */
 app.post('/api/crypto/encrypt', (req, res) => {
   try {
-    const { plaintext } = req.body;
+    const plaintext = req.body.plaintext || req.body.text;
 
     if (!plaintext || typeof plaintext !== 'string') {
       return res.status(400).json({
