@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CyberArena — Unified Cybersecurity Platform</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F172A;
+            color: #E2E8F0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2563EB;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1D4ED8;
+        }
+
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        .sidebar-item:hover {
+            background: #1E293B;
+            color: #F8FAFC;
+        }
+        .sidebar-item.active {
+            background: #2563EB;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.25s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px 24px;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 1px #2563EB;
+        }
+
+        .glow-ring {
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.08);
+        }
+
+        .progress-ring {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.8s ease;
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .badge-pill {
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .soc-pulse {
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.85);
+            }
+        }
+
+        .threat-bar {
+            height: 6px;
+            border-radius: 4px;
+            background: #1E293B;
+            overflow: hidden;
+        }
+        .threat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .crypto-output {
+            font-family: 'Inter', monospace;
+            background: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            color: #E2E8F0;
+            font-size: 14px;
+            word-break: break-all;
+            min-height: 80px;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 13px;
+            background: #1E293B;
+            color: #94A3B8;
+        }
+        .rank-badge.gold {
+            background: #F59E0B;
+            color: #0F172A;
+        }
+        .rank-badge.silver {
+            background: #94A3B8;
+            color: #0F172A;
+        }
+        .rank-badge.bronze {
+            background: #CD7F32;
+            color: #0F172A;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                width: 280px;
+                height: 100vh;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.8);
+                backdrop-filter: blur(4px);
+                z-index: 40;
+            }
+            .sidebar-overlay.open {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .sidebar {
+                transform: translateX(0) !important;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                width: 260px;
+                flex-shrink: 0;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+            .mobile-toggle {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0;
+                width: calc(100% - 260px);
+                flex: 1;
+            }
+        }
+
+        .xp-ring {
+            transition: stroke-dashoffset 1.2s ease;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: #94A3B8;
+            border: none;
+            cursor: pointer;
+        }
+        .tab-btn:hover {
+            background: #1E293B;
+            color: #E2E8F0;
+        }
+        .tab-btn.active {
+            background: #2563EB;
+            color: #FFFFFF;
+        }
+
+        input,
+        textarea,
+        select {
+            background: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #E2E8F0;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            width: 100%;
+            outline: none;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        input::placeholder,
+        textarea::placeholder {
+            color: #64748B;
+        }
+
+        button.primary {
+            background: #2563EB;
+            color: #FFFFFF;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button.primary:hover {
+            background: #1D4ED8;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
+        button.primary:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button.secondary:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        button.success {
+            background: #22C55E;
+            color: #0F172A;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button.success:hover {
+            background: #16A34A;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #1E293B;
+            color: #94A3B8;
+            border: 1px solid #334155;
+        }
+        .chip.primary {
+            background: rgba(37, 99, 235, 0.15);
+            color: #60A5FA;
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+        .chip.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ADE80;
+            border-color: rgba(34, 197, 94, 0.25);
+        }
+        .chip.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #FBBF24;
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+        .chip.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        .page-enter {
+            animation: fadeSlide 0.35s ease forwards;
+        }
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .text-balance {
+            text-wrap: balance;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB, #60A5FA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Repo card mini styles */
+        .repo-card {
+            background: #0F172A;
+            border: 1px solid #1E293B;
+            border-radius: 10px;
+            padding: 14px 16px;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        .repo-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 1px #2563EB;
+            transform: translateY(-1px);
+        }
+        .repo-card .repo-icon {
+            color: #2563EB;
+        }
+        .repo-card .repo-stats {
+            font-size: 11px;
+            color: #64748B;
+        }
+        .repo-card .repo-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .app-card {
+            background: #0F172A;
+            border: 1px solid #1E293B;
+            border-radius: 12px;
+            padding: 20px 24px;
+            transition: all 0.25s ease;
+        }
+        .app-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 1px #2563EB;
+            transform: translateY(-2px);
+        }
+
+        .project-showcase {
+            background: #0F172A;
+            border: 1px solid #1E293B;
+            border-radius: 12px;
+            padding: 20px 24px;
+            transition: all 0.25s ease;
+        }
+        .project-showcase:hover {
+            border-color: #2563EB;
+        }
+
+        .integration-banner {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            border: 1px solid #2563EB;
+            border-radius: 12px;
+            padding: 24px 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .integration-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .integration-banner .badge-integration {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60A5FA;
+            padding: 2px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .stat-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        @media (max-width: 768px) {
+            .stat-grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .repo-grid-6 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+        @media (max-width: 1200px) {
+            .repo-grid-6 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .repo-grid-6 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .repo-grid-6 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen flex flex-col lg:flex-row bg-[#0F172A]">
+
+        <!-- ========== SIDEBAR OVERLAY (mobile) ========== -->
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- ========== SIDEBAR ========== -->
+        <aside id="sidebar" class="sidebar bg-[#0F172A] border-r border-[#1E293B] flex flex-col overflow-y-auto">
+            <!-- Brand -->
+            <div class="px-6 py-6 flex items-center gap-3 border-b border-[#1E293B]">
+                <div class="w-9 h-9 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-lg shadow-[#2563EB]/20">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Cyber<span class="text-[#2563EB]">Arena</span></span>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-3 py-6 space-y-1">
+                <a href="#" onclick="navigateTo('landing')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="landing">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    <span>Overview</span>
+                </a>
+                <a href="#" onclick="navigateTo('dashboard')" class="sidebar-item active flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="dashboard">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" onclick="navigateTo('soc')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="soc">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <span>SOC Center</span>
+                </a>
+                <a href="#" onclick="navigateTo('crypto')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="crypto">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    <span>Crypto Lab</span>
+                </a>
+                <a href="#" onclick="navigateTo('challenges')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="challenges">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span>Challenges</span>
+                </a>
+                <a href="#" onclick="navigateTo('leaderboard')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="leaderboard">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    <span>Leaderboard</span>
+                </a>
+                <a href="#" onclick="navigateTo('about')" class="sidebar-item flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] cursor-pointer" data-page="about">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>About</span>
+                </a>
+            </nav>
+
+            <!-- User footer -->
+            <div class="px-4 py-4 border-t border-[#1E293B]">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#1E293B]/50">
+                    <div class="w-9 h-9 rounded-full bg-[#2563EB]/20 flex items-center justify-center text-[#2563EB] font-bold text-sm">JD</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">Devaanshi</p>
+                        <p class="text-xs text-[#64748B] truncate">Cybersecurity Student</p>
+                    </div>
+                    <div class="w-2 h-2 rounded-full bg-[#22C55E]"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="main-content flex-1 min-h-screen bg-[#0F172A]">
+
+            <!-- Mobile Top Bar -->
+            <div class="lg:hidden flex items-center justify-between px-4 py-4 border-b border-[#1E293B] bg-[#0F172A]/95 sticky top-0 z-30 backdrop-blur-sm">
+                <button onclick="toggleSidebar()" class="text-[#94A3B8] hover:text-white p-2 -ml-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+                <span class="text-lg font-bold text-white">Cyber<span class="text-[#2563EB]">Arena</span></span>
+                <div class="w-8"></div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: LANDING                                                -->
+            <!-- ============================================================ -->
+            <div id="page-landing" class="hidden page-enter p-6 md:p-10">
+                <div class="max-w-5xl mx-auto">
+                    <!-- Hero -->
+                    <div class="text-center py-12 md:py-20">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#60A5FA] text-sm font-medium mb-6">
+                            <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
+                            Next-Gen Cybersecurity Training
+                        </div>
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                            Defend. <span class="gradient-text">Learn.</span> <br class="hidden sm:block" />Conquer.
+                        </h1>
+                        <p class="mt-4 text-lg text-[#94A3B8] max-w-2xl mx-auto text-balance">
+                            CyberArena is the premier hands-on cybersecurity training platform.
+                            Simulate real-world attacks, master defense strategies, and earn your
+                            place among the elite.
+                        </p>
+                        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+                            <button class="primary text-base px-8 py-3.5" onclick="navigateTo('dashboard')">
+                                Get Started
+                                <svg class="inline ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                            </button>
+                            <button class="secondary text-base px-8 py-3.5" onclick="navigateTo('about')">
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-8">
+                        <div class="stat-card text-center">
+                            <p class="text-3xl font-bold text-white">12.4k</p>
+                            <p class="text-sm text-[#64748B] mt-1">Active Users</p>
+                        </div>
+                        <div class="stat-card text-center">
+                            <p class="text-3xl font-bold text-white">340+</p>
+                            <p class="text-sm text-[#64748B] mt-1">Challenges</p>
+                        </div>
+                        <div class="stat-card text-center">
+                            <p class="text-3xl font-bold text-[#22C55E]">98.7%</p>
+                            <p class="text-sm text-[#64748B] mt-1">Completion Rate</p>
+                        </div>
+                        <div class="stat-card text-center">
+                            <p class="text-3xl font-bold text-[#2563EB]">4.9★</p>
+                            <p class="text-sm text-[#64748B] mt-1">User Rating</p>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="mt-20 grid md:grid-cols-3 gap-6">
+                        <div class="bg-[#1E293B] rounded-xl p-6 border border-[#334155] card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-[#2563EB]/20 flex items-center justify-center text-[#2563EB] mb-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">Hands-On Labs</h3>
+                            <p class="text-sm text-[#94A3B8] mt-2">Realistic environments with live attack simulations and defensive strategies.</p>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl p-6 border border-[#334155] card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-[#22C55E]/20 flex items-center justify-center text-[#22C55E] mb-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">CTF Challenges</h3>
+                            <p class="text-sm text-[#94A3B8] mt-2">Test your skills with capture-the-flag challenges across multiple domains.</p>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl p-6 border border-[#334155] card-hover">
+                            <div class="w-12 h-12 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center text-[#F59E0B] mb-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">Leaderboards</h3>
+                            <p class="text-sm text-[#94A3B8] mt-2">Compete globally, track your progress, and rise through the ranks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: DASHBOARD — Enhanced with GitHub repos, live apps, stats -->
+            <!-- ============================================================ -->
+            <div id="page-dashboard" class="page-enter p-6 md:p-10">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">Dashboard</h1>
+                            <p class="text-[#94A3B8] mt-1">Welcome back, Devaanshi. Here's your security overview.</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex items-center gap-3">
+                            <span class="chip success">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#22C55E]"></span>
+                                Online
+                            </span>
+                            <button class="primary text-sm px-4 py-2" onclick="navigateTo('challenges')">Start Lab</button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-[#94A3B8]">XP</span>
+                                <span class="text-xs text-[#2563EB] font-semibold">+240</span>
+                            </div>
+                            <p class="text-2xl font-bold text-white mt-1">12,450</p>
+                            <div class="mt-2 w-full h-1.5 bg-[#0F172A] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#2563EB] rounded-full" style="width:68%"></div>
+                            </div>
+                            <p class="text-xs text-[#64748B] mt-1.5">Level 24 · 68% to next</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Labs Completed</span>
+                            <p class="text-2xl font-bold text-white mt-1">47</p>
+                            <p class="text-xs text-[#22C55E] mt-1.5">↑ 12% from last month</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Challenges Solved</span>
+                            <p class="text-2xl font-bold text-white mt-1">89</p>
+                            <p class="text-xs text-[#F59E0B] mt-1.5">3 in progress</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Security Score</span>
+                            <p class="text-2xl font-bold text-[#22C55E] mt-1">94<span class="text-base text-[#64748B]">/100</span></p>
+                            <p class="text-xs text-[#22C55E] mt-1.5">↑ 4 points this week</p>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: Cybersecurity Project Statistics ===== -->
+                    <div class="mt-6">
+                        <h3 class="text-base font-semibold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                            Project Analytics
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-white">18</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider=">Repositories</p>
+                            </div>
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-[#F59E0B]">2</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider">Live Apps</p>
+                            </div>
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-[#60A5FA]">1000+</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider">PicoCTF Points</p>
+                            </div>
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-[#22C55E]">SOC</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider">Platform</p>
+                            </div>
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-[#F87171]">Crypto</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider">Toolkit</p>
+                            </div>
+                            <div class="stat-card text-center py-3">
+                                <p class="text-xl font-bold text-[#A78BFA]">CyberArena</p>
+                                <p class="text-[10px] text-[#64748B] uppercase tracking-wider">MVP</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: 18 GitHub Repositories ===== -->
+                    <div class="mt-8">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-[#2563EB]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                                GitHub Repositories
+                            </h3>
+                            <span class="text-xs text-[#64748B]">18 projects</span>
+                        </div>
+<div style="text-align: center;">
+<a href="https://github.com/DevaanshiV" target="_blank" style="font-weight: bold; margin: 15px;">
+    View GitHub Portfolio
+</a></div><br>
+                        <div class="repo-grid-6">
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">local-network-port-scanner</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 184</span><span>⑂ 47</span><span>⚠ 3</span>
+</div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">web-directory-buster</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 312</span><span>⑂ 89</span><span>⚠ 7</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">server-log-forensic-analyser</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 276</span><span>⑂ 63</span><span>⚠ 5</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">automated-oinst-scraper</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 198</span><span>⑂ 41</span><span>⚠ 2</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">advanced-cryptographic-encrypter</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 245</span><span>⑂ 72</span><span>⚠ 4</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">subdomain-enumerator</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 167</span><span>⑂ 38</span><span>⚠ 6</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">real-time-firewall-filter</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 423</span><span>⑂ 112</span><span>⚠ 9</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">system-integrity-checker</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 534</span><span>⑂ 147</span><span>⚠ 11</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">asymmetric-rsa-generator</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 289</span><span>⑂ 76</span><span>⚠ 4</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">password-entropy-calculator</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 378</span><span>⑂ 94</span><span>⚠ 8</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">phishing-url-heuristic-detector</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 156</span><span>⑂ 33</span><span>⚠ 12</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">brute-force-simulator-monitor</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 203</span><span>⑂ 55</span><span>⚠ 3</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">wireless-handshake-parser</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 612</span><span>⑂ 184</span><span>⚠ 14</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">zero-trust-access-gate</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 447</span><span>⑂ 108</span><span>⚠ 7</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">malware-behavior-sandbox</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 189</span><span>⑂ 44</span><span>⚠ 5</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">offensive-recon-controller</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 132</span><span>⑂ 29</span><span>⚠ 2</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">cryptographic-cyber-core</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 98</span><span>⑂ 21</span><span>⚠ 1</span></div></div>
+                            <div class="repo-card"><div class="flex items-center gap-2"><svg class="w-4 h-4 repo-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.15 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.62.24 2.85.12 3.15.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span class="text-xs font-medium text-white truncate">forensic-threat-dashboard</span></div><div class="repo-stats mt-1 flex gap-3"><span>⭐ 176</span><span>⑂ 39</span><span>⚠ 6</span></div></div>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: 2 Live Applications ===== -->
+                    <div class="mt-8">
+                        <h3 class="text-base font-semibold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            Live Applications
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="app-card flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-[#2563EB]/15 flex items-center justify-center text-[#2563EB] flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" /></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-white">Forensic Soc</h4>
+                                    <p class="text-xs text-[#94A3B8] mt-0.5">Real-time threat visualization dashboard with live attack mapping and intelligence feeds.</p>
+                                    <div class="mt-2 flex items-center gap-3">
+                                        <span class="chip success text-[10px]">Live</span>
+                                        <a href="https://devaanshiv-forensic-soc.onrender.com" class="text-xs text-[#2563EB] hover:text-[#60A5FA] font-medium">Launch →</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="app-card flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-[#22C55E]/15 flex items-center justify-center text-[#22C55E] flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-white">Cyber Vault</h4>
+                                    <p class="text-xs text-[#94A3B8] mt-0.5">Automated vulnerability assessment tool with comprehensive scanning and reporting.</p>
+                                    <div class="mt-2 flex items-center gap-3">
+                                        <span class="chip success text-[10px]">Live</span>
+                                        <a href="https://devaanshiv-cyber-vault.onrender.com" class="text-xs text-[#2563EB] hover:text-[#60A5FA] font-medium">Launch →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity + XP Ring (kept from original) -->
+                    <div class="grid lg:grid-cols-3 gap-6 mt-8">
+                        <div class="lg:col-span-2 bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-semibold text-white">Recent Activity</h3>
+                                <button class="text-xs text-[#2563EB] hover:text-[#60A5FA] font-medium">View all</button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="activity-dot bg-[#22C55E] mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white">Completed <span class="font-semibold">Network Forensics</span> lab</p>
+                                        <p class="text-xs text-[#64748B]">2 hours ago · +150 XP</p>
+                                    </div>
+                                    <span class="chip success text-[10px]">Complete</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="activity-dot bg-[#F59E0B] mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white">Started <span class="font-semibold">Web Exploitation</span> challenge</p>
+                                        <p class="text-xs text-[#64748B]">5 hours ago · In progress</p>
+                                    </div>
+                                    <span class="chip warning text-[10px]">Active</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="activity-dot bg-[#2563EB] mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white">Earned <span class="font-semibold">"Threat Hunter"</span> badge</p>
+                                        <p class="text-xs text-[#64748B]">1 day ago · +75 XP</p>
+                                    </div>
+                                    <span class="chip primary text-[10px]">Badge</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="activity-dot bg-[#EF4444] mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white">Failed <span class="font-semibold">SQL Injection</span> challenge</p>
+                                        <p class="text-xs text-[#64748B]">2 days ago · -0 XP</p>
+                                    </div>
+                                    <span class="chip danger text-[10px]">Retry</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="activity-dot bg-[#22C55E] mt-1.5"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white">Completed <span class="font-semibold">Cryptography 101</span> lab</p>
+                                        <p class="text-xs text-[#64748B]">3 days ago · +200 XP</p>
+                                    </div>
+                                    <span class="chip success text-[10px]">Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6 flex flex-col items-center justify-center">
+                            <div class="relative w-40 h-40">
+                                <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="42" fill="none" stroke="#0F172A" stroke-width="8" />
+                                    <circle cx="50" cy="50" r="42" fill="none" stroke="#2563EB" stroke-width="8"
+                                    stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="84.4" />
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-3xl font-bold text-white">2,450</span>
+                                    <span class="text-xs text-[#64748B]">XP this month</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <p class="text-sm font-medium text-white">Monthly Progress</p>
+                                <p class="text-xs text-[#64748B]">68% of monthly goal</p>
+                                <div class="mt-3 flex items-center gap-3 text-xs">
+                                    <span class="text-[#22C55E]">▲ 12%</span>
+                                    <span class="text-[#64748B]">vs last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid sm:grid-cols-3 gap-4 mt-6">
+                        <div class="stat-card flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-[#2563EB]/15 flex items-center justify-center text-[#2563EB]">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-[#64748B]">Streak</p>
+                                <p class="text-lg font-bold text-white">12 days</p>
+                            </div>
+                        </div>
+                        <div class="stat-card flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-[#F59E0B]/15 flex items-center justify-center text-[#F59E0B]">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-[#64748B]">Challenges</p>
+                                <p class="text-lg font-bold text-white">12/18</p>
+                            </div>
+                        </div>
+                        <div class="stat-card flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-[#22C55E]/15 flex items-center justify-center text-[#22C55E]">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-[#64748B]">Accuracy</p>
+                                <p class="text-lg font-bold text-[#22C55E]">94%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: SOC CENTER — Integrated with Log Forge                  -->
+            <!-- ============================================================ -->
+            <div id="page-soc" class="hidden p-6 md:p-10">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">SOC Center</h1>
+                            <p class="text-[#94A3B8] mt-1">Real-time security operations monitoring dashboard.</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex items-center gap-3">
+                            <span class="chip success">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#22C55E] soc-pulse"></span>
+                                All systems nominal
+                            </span>
+                            <span class="chip">Last 24h</span>
+                        </div>
+                    </div>
+
+                    <!-- SOC Stats (kept from original) -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Total Alerts</span>
+                            <p class="text-2xl font-bold text-white mt-1">1,284</p>
+                            <p class="text-xs text-[#EF4444] mt-1.5">↑ 8% from yesterday</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Critical</span>
+                            <p class="text-2xl font-bold text-[#EF4444] mt-1">23</p>
+                            <p class="text-xs text-[#EF4444] mt-1.5">Requires immediate attention</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Resolved</span>
+                            <p class="text-2xl font-bold text-[#22C55E] mt-1">1,107</p>
+                            <p class="text-xs text-[#22C55E] mt-1.5">86% closure rate</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Avg Response</span>
+                            <p class="text-2xl font-bold text-[#F59E0B] mt-1">4.2m</p>
+                            <p class="text-xs text-[#64748B] mt-1.5">SLA: 5 minutes</p>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: Log Forge Integration Banner ===== -->
+                    <div class="integration-banner mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="badge-integration">Integrated</span>
+                                <span class="text-xs font-medium text-[#2563EB]">v2.4.1</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                Log Forge
+                            </h3>
+                            <p class="text-sm text-[#94A3B8] max-w-xl">
+                                Advanced log analysis and correlation engine. Ingest, parse, and analyze security logs
+                                from across your infrastructure in real-time.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="chip primary">SIEM Integration</span>
+                                <span class="chip primary">Threat Correlation</span>
+                                <span class="chip primary">Anomaly Detection</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <a href="https://devaanshiv-forensic-soc.onrender.com" target="_blank">
+    Launch Forensic SOC
+</a>
+                            <button class="secondary px-4 py-2.5 text-sm">Docs</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: Log Forge Project Showcase ===== -->
+                    <div class="mt-6">
+                        <h3 class="text-base font-semibold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                            Project Showcase: Log Forge
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Log Ingest &amp; Normalization</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">Parse logs from 50+ sources including firewalls, IDS/IPS, servers, and cloud providers.</p>
+                            </div>
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Threat Correlation Engine</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">Real-time correlation of security events with MITRE ATT&amp;CK mapping and scoring.</p>
+                            </div>
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Automated Response Playbooks</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">Trigger automated actions based on correlation rules — block IPs, isolate endpoints, and more.</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-xs text-[#64748B]">
+                            <span>⚡ 2,340 events/sec</span>
+                            <span>📊 89% threat detection rate</span>
+                            <span>🔗 12 integrations</span>
+                        </div>
+                    </div>
+
+                    <!-- Threat Intel & Incidents (kept from original) -->
+                    <div class="grid lg:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-base font-semibold text-white mb-4">Top Threats</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-[#E2E8F0]">Ransomware</span>
+                                        <span class="text-[#EF4444] font-medium">High</span>
+                                    </div>
+                                    <div class="threat-bar"><div class="threat-bar-fill bg-[#EF4444]" style="width:82%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-[#E2E8F0]">Phishing</span>
+                                        <span class="text-[#F59E0B] font-medium">Medium</span>
+                                    </div>
+                                    <div class="threat-bar"><div class="threat-bar-fill bg-[#F59E0B]" style="width:61%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-[#E2E8F0]">DDoS</span>
+                                        <span class="text-[#F59E0B] font-medium">Medium</span>
+                                    </div>
+                                    <div class="threat-bar"><div class="threat-bar-fill bg-[#F59E0B]" style="width:43%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-[#E2E8F0]">Zero-Day</span>
+                                        <span class="text-[#2563EB] font-medium">Low</span>
+                                    </div>
+                                    <div class="threat-bar"><div class="threat-bar-fill bg-[#2563EB]" style="width:27%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-base font-semibold text-white mb-4">Recent Incidents</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-[#0F172A] border border-[#334155]">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-[#EF4444]"></span>
+                                        <div>
+                                            <p class="text-sm font-medium text-white">Suspicious outbound traffic</p>
+                                            <p class="text-xs text-[#64748B]">2 min ago · Source 10.0.1.45</p>
+                                        </div>
+                                    </div>
+                                    <span class="chip danger text-[10px]">Critical</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-[#0F172A] border border-[#334155]">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span>
+                                        <div>
+                                            <p class="text-sm font-medium text-white">Failed login attempts (x12)</p>
+                                            <p class="text-xs text-[#64748B]">18 min ago · User: admin</p>
+                                        </div>
+                                    </div>
+                                    <span class="chip warning text-[10px]">Warning</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-[#0F172A] border border-[#334155]">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
+                                        <div>
+                                            <p class="text-sm font-medium text-white">Malware signature updated</p>
+                                            <p class="text-xs text-[#64748B]">1 hour ago · 2,340 rules</p>
+                                        </div>
+                                    </div>
+                                    <span class="chip success text-[10px]">Resolved</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SOC Metrics -->
+                    <div class="grid md:grid-cols-3 gap-4 mt-6">
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">IPS Block Rate</span>
+                            <p class="text-2xl font-bold text-white mt-1">94.2%</p>
+                            <p class="text-xs text-[#22C55E] mt-1.5">↑ 1.8% improvement</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Avg Time to Detect</span>
+                            <p class="text-2xl font-bold text-[#22C55E] mt-1">3.4s</p>
+                            <p class="text-xs text-[#64748B] mt-1.5">↓ 0.7s from last week</p>
+                        </div>
+                        <div class="stat-card">
+                            <span class="text-sm font-medium text-[#94A3B8]">Active Analysts</span>
+                            <p class="text-2xl font-bold text-white mt-1">8</p>
+                            <p class="text-xs text-[#64748B] mt-1.5">2 on shift</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: CRYPTO LAB — Integrated with Cipher Core                -->
+            <!-- ============================================================ -->
+            <div id="page-crypto" class="hidden p-6 md:p-10">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">Crypto Lab</h1>
+                            <p class="text-[#94A3B8] mt-1">Encrypt, decrypt, and analyze cryptographic algorithms.</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex items-center gap-2">
+                            <span class="chip primary">AES-256</span>
+                            <span class="chip">RSA</span>
+                            <span class="chip">SHA-256</span>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: Cipher Core Integration Banner ===== -->
+                    <div class="integration-banner mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="badge-integration">Integrated</span>
+                                <span class="text-xs font-medium text-[#2563EB]">v3.1.0</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                Cyber Vault
+                            </h3>
+                            <p class="text-sm text-[#94A3B8] max-w-xl">
+                                Enterprise-grade cryptographic toolkit. Encrypt, decrypt, hash, and verify data
+                                using industry-standard algorithms with a clean, intuitive interface.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="chip primary">AES-256-GCM</span>
+                                <span class="chip primary">RSA-OAEP</span>
+                                <span class="chip primary">Ed25519</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <button class="primary px-5 py-2.5 text-sm flex items-center gap-2" onclick="launchCyberVault()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Launch Cipher Core
+                            </button>
+                            <button class="secondary px-4 py-2.5 text-sm">Docs</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== NEW: Cipher Core Project Showcase ===== -->
+                    <div class="mb-6">
+                        <h3 class="text-base font-semibold text-white mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                            Project Showcase: Cipher Core
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Symmetric Encryption</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">AES-256-GCM with secure key derivation (PBKDF2) and authenticated encryption.</p>
+                            </div>
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#2563EB]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Asymmetric Crypto</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">RSA-OAEP encryption and signing with Ed25519 for high-performance digital signatures.</p>
+                            </div>
+                            <div class="project-showcase">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span>
+                                    <span class="text-xs font-medium text-[#64748B]">Feature</span>
+                                </div>
+                                <h4 class="text-sm font-semibold text-white">Hash &amp; Verify</h4>
+                                <p class="text-xs text-[#94A3B8] mt-1">SHA-2 family, BLAKE2, and Argon2 for password hashing with built-in verification.</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-xs text-[#64748B]">
+                            <span>🔐 12 algorithms supported</span>
+                            <span>⚡ 1.2M ops/sec</span>
+                            <span>✅ FIPS 140-2 compliant</span>
+                        </div>
+                    </div>
+
+                    <!-- Encrypt / Decrypt (kept from original) -->
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <!-- Encryption -->
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-base font-semibold text-white mb-3">Encrypt</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Plain Text</label>
+                                    <textarea id="plainText" rows="3" class="w-full bg-[#0F172A] border border-[#334155] rounded-lg p-3 text-sm text-[#E2E8F0] resize-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] outline-none transition" placeholder="Enter text to encrypt...">Hello, CyberArena!</textarea>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="encryptAlgo" class="flex-1 bg-[#0F172A] border border-[#334155] rounded-lg px-3 py-2 text-sm text-[#E2E8F0] focus:border-[#2563EB] outline-none">
+                                        <option value="aes">AES-256-CBC</option>
+                                        <option value="rsa">RSA-2048</option>
+                                        <option value="des">3DES</option>
+                                    </select>
+                                    <button class="primary px-5 py-2 text-sm" onclick="encryptText()">Encrypt</button>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Cipher Text</label>
+                                    <div id="cipherOutput" class="crypto-output flex items-center justify-between">
+                                        <span class="text-[#94A3B8] text-sm">Encrypted output will appear here</span>
+                                        <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium" onclick="copyOutput('cipherOutput')">Copy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decryption -->
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-base font-semibold text-white mb-3">Decrypt</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Cipher Text</label>
+                                    <textarea id="cipherText" rows="3" class="w-full bg-[#0F172A] border border-[#334155] rounded-lg p-3 text-sm text-[#E2E8F0] resize-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] outline-none transition" placeholder="Paste cipher text to decrypt..."></textarea>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="decryptAlgo" class="flex-1 bg-[#0F172A] border border-[#334155] rounded-lg px-3 py-2 text-sm text-[#E2E8F0] focus:border-[#2563EB] outline-none">
+                                        <option value="aes">AES-256-CBC</option>
+                                        <option value="rsa">RSA-2048</option>
+                                        <option value="des">3DES</option>
+                                    </select>
+                                    <button class="secondary px-5 py-2 text-sm" onclick="decryptText()">Decrypt</button>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Decrypted Text</label>
+                                    <div id="decryptOutput" class="crypto-output flex items-center justify-between">
+                                        <span class="text-[#94A3B8] text-sm">Decrypted output will appear here</span>
+                                        <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium" onclick="copyOutput('decryptOutput')">Copy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hash Tools (kept from original) -->
+                    <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6 mt-6">
+                        <h3 class="text-base font-semibold text-white mb-3">Hash Generator</h3>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Input</label>
+                                <input id="hashInput" type="text" class="bg-[#0F172A] border border-[#334155] rounded-lg px-3 py-2 text-sm text-[#E2E8F0] focus:border-[#2563EB] outline-none w-full" placeholder="Enter text to hash..." value="CyberArena" />
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Algorithm</label>
+                                <select id="hashAlgo" class="bg-[#0F172A] border border-[#334155] rounded-lg px-3 py-2 text-sm text-[#E2E8F0] focus:border-[#2563EB] outline-none w-full">
+                                    <option value="sha256">SHA-256</option>
+                                    <option value="sha512">SHA-512</option>
+                                    <option value="md5">MD5</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button class="primary px-6 py-2 text-sm" onclick="generateHash()">Generate Hash</button>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-xs font-medium text-[#94A3B8] mb-1.5">Hash Result</label>
+                            <div id="hashOutput" class="crypto-output flex items-center justify-between">
+                                <span class="text-[#94A3B8] text-sm font-mono">Hash will appear here</span>
+                                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium" onclick="copyOutput('hashOutput')">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: CHALLENGES                                             -->
+            <!-- ============================================================ -->
+            <div id="page-challenges" class="hidden p-6 md:p-10">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">Challenges</h1>
+                            <p class="text-[#94A3B8] mt-1">Test your skills across multiple cybersecurity domains.</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex items-center gap-2">
+                            <span class="chip success">12 completed</span>
+                            <span class="chip warning">3 in progress</span>
+                            <span class="chip">18 total</span>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="flex flex-wrap items-center gap-2 mb-6">
+                        <button class="tab-btn active">All</button>
+                        <button class="tab-btn">Web</button>
+                        <button class="tab-btn">Network</button>
+                        <button class="tab-btn">Crypto</button>
+                        <button class="tab-btn">Forensics</button>
+                        <button class="tab-btn">Reverse</button>
+                        <button class="tab-btn ml-auto text-[#2563EB] text-sm font-medium">+ New</button>
+                    </div>
+
+                    <!-- Challenge Grid -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip primary">Web</span>
+                                <span class="text-xs text-[#64748B]">Medium</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">SQL Injection</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Exploit a vulnerable login form to extract user data.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+150 XP</span>
+                                <span class="chip success text-[10px]">Completed</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip warning">Network</span>
+                                <span class="text-xs text-[#64748B]">Hard</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">Packet Analysis</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Analyze a PCAP file to identify malicious traffic patterns.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+250 XP</span>
+                                <span class="chip warning text-[10px]">In Progress</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip primary">Crypto</span>
+                                <span class="text-xs text-[#64748B]">Easy</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">Caesar Cipher</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Decode a message encrypted with a classic Caesar shift.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+75 XP</span>
+                                <span class="chip danger text-[10px]">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip danger">Forensics</span>
+                                <span class="text-xs text-[#64748B]">Medium</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">Disk Image Analysis</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Recover deleted files from a forensic disk image.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+200 XP</span>
+                                <span class="chip danger text-[10px]">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip warning">Reverse</span>
+                                <span class="text-xs text-[#64748B]">Hard</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">Binary Exploitation</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Find and exploit a buffer overflow vulnerability.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+300 XP</span>
+                                <span class="chip danger text-[10px]">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 card-hover">
+                            <div class="flex items-start justify-between">
+                                <span class="chip primary">Web</span>
+                                <span class="text-xs text-[#64748B]">Easy</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-white mt-3">XSS Challenge</h3>
+                            <p class="text-sm text-[#94A3B8] mt-1">Inject a cross-site scripting payload into a comment field.</p>
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-[#334155]">
+                                <span class="text-xs text-[#64748B]">+100 XP</span>
+                                <span class="chip success text-[10px]">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: LEADERBOARD                                            -->
+            <!-- ============================================================ -->
+            <div id="page-leaderboard" class="hidden p-6 md:p-10">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">Leaderboard</h1>
+                            <p class="text-[#94A3B8] mt-1">Top security professionals in the arena.</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex items-center gap-2">
+                            <span class="chip">Global</span>
+                            <span class="chip primary">This Month</span>
+                        </div>
+                    </div>
+
+                    <!-- Podium -->
+                    <div class="grid grid-cols-3 gap-3 mb-8">
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 text-center card-hover">
+                            <div class="rank-badge silver mx-auto">2</div>
+                            <div class="w-14 h-14 rounded-full bg-[#334155] mx-auto mt-3 flex items-center justify-center text-xl font-bold text-white">JD</div>
+                            <p class="text-sm font-semibold text-white mt-2">Jane Doe</p>
+                            <p class="text-xs text-[#64748B]">8,450 XP</p>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#2563EB] p-5 text-center card-hover relative">
+                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 text-xs font-bold text-[#F59E0B]">👑</div>
+                            <div class="rank-badge gold mx-auto">1</div>
+                            <div class="w-14 h-14 rounded-full bg-[#2563EB]/20 mx-auto mt-3 flex items-center justify-center text-xl font-bold text-[#2563EB]">AK</div>
+                            <p class="text-sm font-semibold text-white mt-2">Alex King</p>
+                            <p class="text-xs text-[#F59E0B]">12,340 XP</p>
+                        </div>
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-5 text-center card-hover">
+                            <div class="rank-badge bronze mx-auto">3</div>
+                            <div class="w-14 h-14 rounded-full bg-[#334155] mx-auto mt-3 flex items-center justify-center text-xl font-bold text-white">MR</div>
+                            <p class="text-sm font-semibold text-white mt-2">Maria Rodriguez</p>
+                            <p class="text-xs text-[#64748B]">6,720 XP</p>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="bg-[#1E293B] rounded-xl border border-[#334155] overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-[#334155] bg-[#0F172A]/50">
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-[#64748B] uppercase tracking-wider">Rank</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-[#64748B] uppercase tracking-wider">User</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-[#64748B] uppercase tracking-wider">XP</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-[#64748B] uppercase tracking-wider">Labs</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-[#64748B] uppercase tracking-wider">Badges</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#334155]">
+                                    <tr class="hover:bg-[#0F172A]/40 transition">
+                                        <td class="px-5 py-3.5 text-[#94A3B8] font-medium">#4</td>
+                                        <td class="px-5 py-3.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#334155] flex items-center justify-center text-xs font-bold text-white">CW</div>
+                                                <span class="text-white font-medium">Chris Wong</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-[#E2E8F0]">5,980</td>
+                                        <td class="px-5 py-3.5 text-[#94A3B8]">34</td>
+                                        <td class="px-5 py-3.5"><span class="chip primary">7</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-[#0F172A]/40 transition">
+                                        <td class="px-5 py-3.5 text-[#94A3B8] font-medium">#5</td>
+                                        <td class="px-5 py-3.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#334155] flex items-center justify-center text-xs font-bold text-white">SP</div>
+                                                <span class="text-white font-medium">Sarah Park</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-[#E2E8F0]">5,120</td>
+                                        <td class="px-5 py-3.5 text-[#94A3B8]">29</td>
+                                        <td class="px-5 py-3.5"><span class="chip warning">5</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-[#0F172A]/40 transition bg-[#2563EB]/5 border border-[#2563EB]/20">
+                                        <td class="px-5 py-3.5 text-[#2563EB] font-medium">#6</td>
+                                        <td class="px-5 py-3.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#2563EB] flex items-center justify-center text-xs font-bold text-white">JD</div>
+                                                <span class="text-white font-medium">Devaanshi</span>
+                                                <span class="text-[10px] font-medium text-[#2563EB] bg-[#2563EB]/15 px-2 py-0.5 rounded">You</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-[#E2E8F0] font-semibold">4,870</td>
+                                        <td class="px-5 py-3.5 text-[#94A3B8]">24</td>
+                                        <td class="px-5 py-3.5"><span class="chip success">4</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-[#0F172A]/40 transition">
+                                        <td class="px-5 py-3.5 text-[#94A3B8] font-medium">#7</td>
+                                        <td class="px-5 py-3.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#334155] flex items-center justify-center text-xs font-bold text-white">ML</div>
+                                                <span class="text-white font-medium">Mike Liu</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-[#E2E8F0]">4,230</td>
+                                        <td class="px-5 py-3.5 text-[#94A3B8]">21</td>
+                                        <td class="px-5 py-3.5"><span class="chip">3</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-[#0F172A]/40 transition">
+                                        <td class="px-5 py-3.5 text-[#94A3B8] font-medium">#8</td>
+                                        <td class="px-5 py-3.5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-[#334155] flex items-center justify-center text-xs font-bold text-white">EG</div>
+                                                <span class="text-white font-medium">Emma Garcia</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-[#E2E8F0]">3,890</td>
+                                        <td class="px-5 py-3.5 text-[#94A3B8]">18</td>
+                                        <td class="px-5 py-3.5"><span class="chip primary">6</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- PAGE: ABOUT — Unified Cybersecurity Platform                  -->
+            <!-- ============================================================ -->
+            <div id="page-about" class="hidden p-6 md:p-10">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">About CyberArena</h1>
+                    <p class="text-[#94A3B8] mb-8">A unified cybersecurity platform for learning, defending, and innovating.</p>
+
+                    <div class="space-y-6">
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span class="text-[#2563EB]">✦</span> The Unified Cybersecurity Platform
+                            </h3>
+                            <p class="text-[#94A3B8] mt-2 leading-relaxed">
+                                <strong class="text-white">CyberArena</strong> is more than just a training ground — it's a
+                                <strong class="text-white">unified cybersecurity ecosystem</strong> that brings together
+                                hands-on labs, CTF challenges, real-time SOC monitoring, cryptographic tooling, and
+                                collaborative leaderboards into a single, integrated experience. Whether you're a
+                                security analyst, penetration tester, SOC engineer, or student, CyberArena provides
+                                the tools, environments, and community you need to sharpen your skills and stay
+                                ahead of emerging threats.
+                            </p>
+                            <p class="text-[#94A3B8] mt-3 leading-relaxed">
+                                Our platform is built on the belief that cybersecurity education must be
+                                <strong class="text-white">practical, immersive, and continuous</strong>. By
+                                unifying attack simulation, defense strategy, and real-world monitoring into one
+                                cohesive platform, we empower security professionals to learn faster, respond
+                                smarter, and collaborate more effectively.
+                            </p>
+                        </div>
+
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span class="text-[#2563EB]">✦</span> What We Offer
+                            </h3>
+                            <ul class="mt-3 space-y-2 text-[#94A3B8] leading-relaxed">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">Hands-on Labs</span> — Real-world attack and defense scenarios.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">CTF Challenges</span> — Capture the flag challenges across all domains.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">Crypto Lab</span> — Encrypt, decrypt, and analyze cryptographic systems.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">SOC Center</span> — Monitor and respond to security incidents in real-time.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">Log Forge Integration</span> — Advanced log analysis and correlation engine.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">Cipher Core Integration</span> — Enterprise-grade cryptographic toolkit.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-[#22C55E] mt-0.5">✓</span>
+                                    <span><span class="text-white font-medium">Leaderboards</span> — Compete globally and track your progress.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span class="text-[#2563EB]">✦</span> Built For
+                            </h3>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="chip primary">Security Analysts</span>
+                                <span class="chip primary">Penetration Testers</span>
+                                <span class="chip primary">SOC Teams</span>
+                                <span class="chip primary">Students</span>
+                                <span class="chip primary">CTF Players</span>
+                                <span class="chip primary">Security Engineers</span>
+                                <span class="chip primary">DevSecOps</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#1E293B] rounded-xl border border-[#334155] p-6">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span class="text-[#2563EB]">✦</span> Technology Stack
+                            </h3>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="chip">Next.js 15</span>
+                                <span class="chip">React</span>
+                                <span class="chip">Tailwind CSS</span>
+                                <span class="chip">shadcn/ui</span>
+                                <span class="chip">TypeScript</span>
+                                <span class="chip">Node.js</span>
+                                <span class="chip">Web Crypto API</span>
+                                <span class="chip">PostgreSQL</span>
+                                <span class="chip">Redis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ================================================================
+        // NAVIGATION
+        // ================================================================
+        const pages = ['landing', 'dashboard', 'soc', 'crypto', 'challenges', 'leaderboard', 'about'];
+
+        function navigateTo(page) {
+            pages.forEach(p => {
+                const el = document.getElementById('page-' + p);
+                if (el) el.classList.add('hidden');
+            });
+
+            const target = document.getElementById('page-' + page);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.remove('page-enter');
+                void target.offsetWidth;
+                target.classList.add('page-enter');
+            }
+
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+
+            closeSidebar();
+            window.location.hash = page;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (pages.includes(hash)) {
+                navigateTo(hash);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (pages.includes(hash)) {
+                navigateTo(hash);
+            } else {
+                navigateTo('dashboard'); // default to dashboard per user request
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSidebar();
+        });
+
+        // ================================================================
+        // CRYPTO LAB FUNCTIONS (simulated)
+        // ================================================================
+        function encryptText() {
+            const plain = document.getElementById('plainText').value || 'Hello, CyberArena!';
+            const algo = document.getElementById('encryptAlgo').value;
+            const output = document.getElementById('cipherOutput');
+
+            const encoded = btoa(plain);
+            const simulated = `[${algo.toUpperCase()}] ${encoded.slice(0, 20)}...${encoded.slice(-8)}`;
+            output.innerHTML = `
+                <span class="text-[#E2E8F0] text-sm font-mono break-all">${simulated}</span>
+                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('cipherOutput')">Copy</button>
+            `;
+        }
+
+        function decryptText() {
+            const cipher = document.getElementById('cipherText').value;
+            const output = document.getElementById('decryptOutput');
+
+            if (!cipher.trim()) {
+                output.innerHTML = `
+                    <span class="text-[#EF4444] text-sm">Please paste cipher text to decrypt.</span>
+                    <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('decryptOutput')">Copy</button>
+                `;
+                return;
+            }
+
+            const match = cipher.match(/\[([^\]]+)\]\s*(.+)/);
+            let decrypted = 'Decrypted: ';
+            if (match && match[2]) {
+                try {
+                    const clean = match[2].replace(/\.\.\..*$/, '');
+                    const decoded = atob(clean + '===');
+                    decrypted += decoded;
+                } catch {
+                    decrypted += 'Unable to decrypt (invalid format)';
+                }
+            } else {
+                decrypted += 'Invalid cipher text format';
+            }
+
+            output.innerHTML = `
+                <span class="text-[#E2E8F0] text-sm font-mono break-all">${decrypted}</span>
+                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('decryptOutput')">Copy</button>
+            `;
+        }
+
+        function generateHash() {
+            const input = document.getElementById('hashInput').value || 'CyberArena';
+            const algo = document.getElementById('hashAlgo').value;
+            const output = document.getElementById('hashOutput');
+
+            let hash = '';
+            const str = input + algo;
+            for (let i = 0; i < (algo === 'md5' ? 32 : 64); i++) {
+                const char = str.charCodeAt(i % str.length) + i * 3;
+                hash += ((char % 16).toString(16));
+            }
+            const label = algo.toUpperCase();
+            const result = `${label}: ${hash}`;
+
+            output.innerHTML = `
+                <span class="text-[#E2E8F0] text-sm font-mono break-all">${result}</span>
+                <button class="text-[#2563EB] hover:text-[#60A5FA] text-xs font-medium ml-2 flex-shrink-0" onclick="copyOutput('hashOutput')">Copy</button>
+            `;
+        }
+
+        function copyOutput(elementId) {
+            const el = document.getElementById(elementId);
+            const text = el.textContent.replace('Copy', '').trim();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = el.querySelector('button');
+                    const orig = btn.textContent;
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => btn.textContent = orig, 1500);
+                }).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+
+        // ================================================================
+        // LAUNCH FUNCTIONS for integrations
+        // ================================================================
+        function launchSOC() {
+          window.open('https://devaanshiv-forensic-soc.onrender.com/', '_blank');
+            }
+
+        function launchCyberVault() {
+          window.open('https://devaanshiv-cyber-vault.onrender.com/', '_blank');
+            
+        }
+
+        // ================================================================
+        // TABS (Challenges)
+        // ================================================================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const parent = this.closest('.flex-wrap');
+                if (parent) {
+                    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                }
+                this.classList.add('active');
+            });
+        });
+
+        // ================================================================
+        // Auto-crypto on load
+        // ================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const plain = document.getElementById('plainText');
+                if (plain) {
+                    const cryptoPage = document.getElementById('page-crypto');
+                    if (cryptoPage && !cryptoPage.classList.contains('hidden')) {
+                        encryptText();
+                    }
+                }
+            }, 300);
+        });
+
+        const cryptoObserver = new MutationObserver(() => {
+            const cryptoPage = document.getElementById('page-crypto');
+            if (cryptoPage && !cryptoPage.classList.contains('hidden')) {
+                const output = document.getElementById('cipherOutput');
+                if (output && output.querySelector('.text-\\[\\#94A3B8\\]')) {
+                    encryptText();
+                }
+                const hashOut = document.getElementById('hashOutput');
+                if (hashOut && hashOut.querySelector('.text-\\[\\#94A3B8\\]')) {
+                    generateHash();
+                }
+            }
+        });
+        document.querySelectorAll('#page-crypto').forEach(el => {
+            cryptoObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
+        });
+    </script>
+
+</body>
+</html>
